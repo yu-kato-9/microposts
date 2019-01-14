@@ -9,6 +9,7 @@
       </div>
     </div>
     <%= render 'relationships/follow_button', user: @user %>
+    <%= link_to 'Likes', likes_user_path(@user), class: 'btn btn-primary btn-block' %>
   </aside>
   <div class="col-xs-8">
     <ul class="nav nav-tabs nav-jastified">

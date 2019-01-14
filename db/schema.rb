@@ -10,7 +10,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190111144420) do
+ActiveRecord::Schema.define(version: 20190112080033) do
+
+  create_table "likemicroposts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id"
+    t.integer  "micropost_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.index ["micropost_id"], name: "index_likemicroposts_on_micropost_id", using: :btree
+    t.index ["user_id"], name: "index_likemicroposts_on_user_id", using: :btree
+  end
+
+  create_table "likes", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id"
+    t.integer  "micropost_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.index ["micropost_id"], name: "index_likes_on_micropost_id", using: :btree
+    t.index ["user_id"], name: "index_likes_on_user_id", using: :btree
+  end
 
   create_table "microposts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "content"
@@ -38,6 +56,10 @@ ActiveRecord::Schema.define(version: 20190111144420) do
     t.datetime "updated_at",      null: false
   end
 
+  add_foreign_key "likemicroposts", "microposts"
+  add_foreign_key "likemicroposts", "users"
+  add_foreign_key "likes", "microposts"
+  add_foreign_key "likes", "users"
   add_foreign_key "microposts", "users"
   add_foreign_key "relationships", "users"
   add_foreign_key "relationships", "users", column: "follow_id"

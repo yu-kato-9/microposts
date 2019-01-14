@@ -7,10 +7,13 @@ class User < ApplicationRecord
   has_secure_password
   
   has_many :microposts
-  has_many :relationships
+  has_many :relationships, class_name: 'Relationship', foreign_key: :user_id 
   has_many :followings, through: :relationships, source: :follow
   has_many :reverses_of_relationship, class_name: 'Relationship', foreign_key: 'follow_id'
   has_many :followers, through: :reverses_of_relationship, source: :user
+
+  has_many :likemicroposts
+  has_many :likes, through: :likemicroposts, source: :micropost
   
   def follow(other_user)
     unless self == other_user
@@ -29,5 +32,18 @@ class User < ApplicationRecord
   
   def feed_microposts
     Micropost.where(user_id: self.following_ids + [self.id]) # 配列で揃える
+  end
+  
+  def register_to_likes(micropost)
+    self.likemicroposts.find_or_create_by(micropost_id: micropost.id)
+  end
+  
+  def unregister_from_likes(micropost)
+    unlike_micropost = self.likemicroposts.find_by(micropost_id: micropost.id)
+    unlike_micropost.destroy if unlike_micropost
+  end
+  
+  def already_registered?(micropost)
+    self.likes.include?(micropost)
   end
 end
